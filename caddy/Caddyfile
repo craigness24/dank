@@ -1,0 +1,36 @@
+# The Caddyfile is an easy way to configure your Caddy web server.
+#
+# Unless the file starts with a global options block, the first
+# uncommented line is always the address of your site.
+#
+# To use your own domain name (with automatic HTTPS), first make
+# sure your domain's A/AAAA DNS records are properly pointed to
+# this machine's public IP, then replace ":80" below with your
+# domain name.
+(cloudflare) {
+  tls {
+    dns cloudflare {env.CF_API_TOKEN}
+  }
+}
+
+# frigate
+nvr.dank.fart.casa {
+  reverse_proxy http://172.16.20.25:5000
+  import cloudflare
+}
+
+# robot vacuum
+eva.dank.fart.casa {
+  reverse_proxy http://172.16.40.5
+  import cloudflare
+}
+
+# home-assistant
+hass.dank.fart.casa {
+  reverse_proxy http://172.16.20.23:8123
+  @ws: {
+    header Connection "Upgrade"
+    header Upgrade websocket
+  }
+  import cloudflare
+}
